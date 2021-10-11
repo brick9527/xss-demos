@@ -1,9 +1,10 @@
 const Koa = require('koa');
-const Router = require('@koa/router');
 const koaCompose = require('koa-compose');
 const koaBody = require('koa-body');
 const koaStatic = require('koa-static');
 const path = require('path');
+
+const router = require('./libs/router');
 
 const PORT = 3002;
 
@@ -24,6 +25,10 @@ async function main() {
     }),
     koaStatic(path.join(__dirname, '/public'))
   ]));
+
+  // 注册路由
+  app.use(router.routes()).use(router.allowedMethods());
+
 
   app.listen(PORT, (err) => {
     if (err) {

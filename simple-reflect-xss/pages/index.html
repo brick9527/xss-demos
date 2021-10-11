@@ -1,0 +1,75 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页</title>
+  <script src="/public/js/jquery-3.6.0.js"></script>
+  <link rel="stylesheet" href="/public/bootstrap/css/bootstrap.min.css" />
+  <script src="/public/bootstrap/js/bootstrap.min.js"></script>
+  <style>
+    .row {
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+    .hide {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="row main-page">
+    <ul class="nav nav-pills nav-stacked col-md-2">
+      <li role="presentation" class="active toggle-btn"><a href="#">首页</a></li>
+      <li role="presentation" class="toggle-btn"><a href="#">帖子</a></li>
+      <li role="presentation" class="toggle-btn"><a href="#">个人信息</a></li>
+    </ul>
+    <div class="col-md-9 page-main" id="index-page">首页</div>
+    <div class="col-md-9 hide page-main" id="post-page">帖子</div>
+    <div class="col-md-9 hide page-main" id="info-page">个人信息</div>
+  </div>
+</body>
+<script>
+  // 获取用户信息
+  var getUserInfo = function () {
+    var cookieGroup = document.cookie.replace(' ', '').split(';');
+    var url = '/api/info';
+    $.ajax({
+      method: 'get',
+      url: url,
+      success: function(data, textStatus, jqXHR) {
+        console.log(data);
+      }
+    });
+  }
+
+  // 切换页面事件
+  $('.toggle-btn').on('click', function (e) {
+    var liEle = $(e.target.parentNode.parentNode).children('.toggle-btn');
+    console.log(e.target.innerHTML)
+    for (var i = 0; i < liEle.length; i++) {
+      $(e.target.parentNode.parentNode).children('.toggle-btn').eq(i).attr('class', 'toggle-btn');
+      $('.main-page').children('.page-main').eq(i).addClass('hide');
+    }
+
+    if (e.target.innerHTML === '首页') {
+      $('.main-page').children('#index-page').removeClass('hide');
+    } else if (e.target.innerHTML === '帖子') {
+      $('.main-page').children('#post-page').removeClass('hide');
+      // getUserPost();
+    } else {
+      $('.main-page').children('#info-page').removeClass('hide');
+      getUserInfo();
+    }
+    e.target.parentNode.className += ' active ';
+  })
+
+  window.onunload = function () {
+    $('.toggle-btn').unbind('click');
+  }
+</script>
+
+</html>

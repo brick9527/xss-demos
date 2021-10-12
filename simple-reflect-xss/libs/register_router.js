@@ -1,5 +1,5 @@
-module.exports = function (method, routePath, handler) {
+module.exports = async function (method, routePath, handler) {
   if (this.method === method && this.base === routePath) {
-    handler(this, this.res);
+    await handler(this, this.res);
   }
 };

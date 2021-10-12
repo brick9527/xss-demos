@@ -6,6 +6,8 @@ const registerRouter = require('./libs/register_router');
 const publicController = require('./controller/public');
 const renderIndexPage = require('./controller/index');
 const userInfo = require('./controller/user_info');
+const login = require('./controller/login');
+const checkCookie = require('./controller/check_cookie');
 
 const PORT = 3001;
 
@@ -17,6 +19,7 @@ const server = http.createServer((req, res) => {
   req.res = res;
   req.registerRouter = registerRouter;
 
+
   console.log(base, query);
   // GET /public
   req.registerRouter('GET', '/public/js/jquery-3.6.0.js', publicController);
@@ -25,8 +28,14 @@ const server = http.createServer((req, res) => {
   req.registerRouter('GET', '/public/bootstrap/css/bootstrap.min.css.map', publicController);
 
 
+  // POST /api/login
+  req.registerRouter('POST', '/api/login', login);
+
   // GET /api/info
   req.registerRouter('GET', '/api/info', userInfo);
+
+  // GET /page/checkCookie
+  req.registerRouter('GET', '/page/checkCookie', checkCookie);
 
   // GET /hello
   req.registerRouter('GET', '/hello', helloController);

@@ -1,7 +1,10 @@
+const getCookie = require('../libs/get_cookie');
+
 module.exports = (req, res) => {
   const userInfo = {
     name: 'zhangsan',
-    age: 18
+    age: 18,
+    uuid: 'zhangs-30e63e0f-ed5a-4360-b3f8-e2b53b11e025',
   };
 
   if (!req.headers.cookie) {
@@ -9,14 +12,7 @@ module.exports = (req, res) => {
     return res.end('failed');
   }
 
-  const cookieGroup = req.headers.cookie.replace(' ', '').split(';');
-  const cookieValue = cookieGroup.reduce((total, item) => {
-    const [key, value] = item.split('=');
-    if (key === 'uid') {
-      total = value;
-    }
-    return total;
-  }, '');
+  const cookieValue = getCookie(req);
 
   console.log(`获取cookie: ${cookieValue}`);
   res.end(JSON.stringify(userInfo));

@@ -7,7 +7,7 @@ router.post('/api/password', (ctx, next) => {
 });
 
 router.get('/api/password', (ctx, next) => {
-  console.log(ctx.body);
+  console.log(ctx.body, ctx.query);
   ctx.body = 'ok';
 });
 

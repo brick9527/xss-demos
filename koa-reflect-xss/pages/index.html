@@ -28,26 +28,60 @@
       <li role="presentation" class="toggle-btn"><a href="#">个人信息</a></li>
     </ul>
     <div class="col-md-9 page-main" id="index-page">
-      <form>
-        <div class="form-group">
-          <label for="username">用户名</label>
-          <input type="text" class="form-control" id="username">
-        </div>
-        <div class="form-group">
-          <label for="password">密码</label>
-          <input type="password" class="form-control" id="password">
-        </div>
-        <button type="submit" class="btn btn-default" id="login-btn">登录</button>
-      </form>
-      <button type="button" class="btn btn-primary" id="user-info-btn">获取用户信息</button>
-      <div id="user-info-div"></div>
+      <div class="col-md-6">
+        <h3>登录</h3>
+        <form>
+          <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username">
+          </div>
+          <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password">
+          </div>
+          <button type="submit" class="btn btn-default" id="login-btn">登录</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h3>个人信息</h3>
+        <button type="button" class="btn btn-primary" id="user-info-btn">获取用户信息</button>
+        <button type="button" class="btn btn-primary" id="clear-cookie-btn">清除cookie(开发)</button>
+        <div id="user-info-div"></div>
+      </div>
       <!-- <button type="button" class="btn btn-default" id="check-cookie-btn">检查cookie</button> -->
     </div>
-    <div class="col-md-9 hide page-main" id="post-page">帖子</div>
+    <div class="col-md-9 hide page-main" id="post-page">
+      <h3>帖子列表</h3>
+      <ul class="list-group">
+        <li class="list-group-item">Cras justo odio</li>
+        <li class="list-group-item">Dapibus ac facilisis in</li>
+        <li class="list-group-item">Morbi leo risus</li>
+        <li class="list-group-item">Porta ac consectetur ac</li>
+        <li class="list-group-item">Vestibulum at eros</li>
+      </ul>
+      <h4>发表</h4>
+      <textarea class="form-control" rows="3" id="post-content"></textarea>
+      <button type="button" id="add-post-btn">发表</button>
+    </div>
     <div class="col-md-9 hide page-main" id="info-page">个人信息</div>
   </div>
 </body>
 <script>
+  // 获取帖子列表
+  var getUserPost = function() {
+    $('.list-group').html('');
+    $.ajax({
+      url: '/api/getPostList',
+      method: 'get',
+      success: function(data, textStatus, jqXHR) {
+        console.log(data);
+        data.forEach(item => {
+          $('.list-group').eq(0).append('<li class="list-group-item">' + item.user + ': ' + item.content + '</li>');
+        })
+      }
+    });
+  };
+
   // 获取用户信息
   var getUserInfo = function () {
     var cookieGroup = document.cookie.replace(' ', '').split(';');
@@ -74,7 +108,7 @@
       $('.main-page').children('#index-page').removeClass('hide');
     } else if (e.target.innerHTML === '帖子') {
       $('.main-page').children('#post-page').removeClass('hide');
-      // getUserPost();
+      getUserPost();
     } else {
       $('.main-page').children('#info-page').removeClass('hide');
       getUserInfo();
@@ -105,6 +139,7 @@
           alert('登录失败');
           return;
         }
+        alert('登录成功');
       },
       error: function(data, textStatus, jqXHR) {
         alert('登录失败');
@@ -122,17 +157,52 @@
       success: function(data, textStatus, jqXHR) {
         var status = data.status;
         if (!status) {
-          alert('获取用户信息失败');
+          $('#user-info-div').append('none');
           return;
         }
         console.log(data);
         $('#user-info-div').append('<p>姓名: ' + data.user.name + '</p>');
       },
       error: function(data, textStatus, jqXHR) {
-        alert('获取用户信息失败');
+        $('#user-info-div').append('none');
       }
     });
-  })
+  });
+
+  // 清除cookie
+  $('#clear-cookie-btn').on('click', function(e) {
+    $('#user-info-div').html('');
+    $.ajax({
+      url: '/api/clearCookie',
+      method: 'post',
+      success: function(data, textStatus, jqXHR) {
+        alert('清除cookie成功');
+      },
+      error: function(data, textStatus, jqXHR) {
+        alert('清除cookie失败');
+      },
+    });
+  });
+
+  // 发表帖子
+  $('#add-post-btn').on('click', function(e) {
+    var content = $('#post-content').val();
+    $.ajax({
+      url: '/api/addPost',
+      method: 'post',
+      data: { content: content },
+      success: function(data, textStatus, jqXHR) {
+        alert('发表成功');
+        $('.list-group').html('');
+        data.postData.forEach(item => {
+          $('.list-group').eq(0).append('<li class="list-group-item">' + item.user + ': ' + item.content + '</li>');
+        })
+      },
+      error: function(data, textStatus, jqXHR) {
+        alert('发表失败');
+      },
+    });
+  });
 </script>
 
 </html>

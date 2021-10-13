@@ -41,4 +41,10 @@ module.exports = (router) => {
 
     ctx.body = { status: true, user: user[0] };
   });
+
+  // 清除cookie
+  router.post('/api/clearCookie', ctx => {
+    ctx.cookies.set('uid', null);
+    ctx.body = { status: true };
+  });
 };

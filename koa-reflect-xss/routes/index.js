@@ -4,6 +4,7 @@ const path = require('path');
 
 const userRouter = require('./user');
 const pageRouter = require('./page');
+const postRouter = require('./post');
 
 const router = new Router();
 
@@ -14,5 +15,6 @@ router.get('/', ctx => {
 });
 pageRouter(router);
 userRouter(router);
+postRouter(router);
 
 module.exports = router;

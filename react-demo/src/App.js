@@ -5,7 +5,7 @@ function App() {
 
   const testHref = 'javascript:alert("a:xss")';
 
-  const testImgSrc = 'javascript:alert("img:xss")';
+  const testImgSrc = 'http://127.0.0.1:3002/api/password?name=react';
   return (
     <div className="App">
       <div {...userProvideProps} /> 
